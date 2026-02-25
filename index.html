@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Origen y Naturaleza del Lenguaje: Una Genealogía Teórica</title>
+    <!-- Tailwind CSS para diseño rápido y responsive -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome para íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        serif: ['Lora', 'serif'],
+                    },
+                    colors: {
+                        primary: '#1e3a8a', // Azul oscuro profundo
+                        secondary: '#0891b2', // Cyan/Teal
+                        accent: '#f59e0b', // Ámbar para hotspots
+                        light: '#f8fafc',
+                        dark: '#0f172a'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Estilos personalizados y animaciones */
+        body { overflow-x: hidden; background-color: #f1f5f9; }
+        
+        .view-section {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+            min-height: 100vh;
+            padding-bottom: 80px; /* Espacio para la barra de navegación inferior */
+        }
+        .view-section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Estilo para los marcadores interactivos (Hotspots) */
+        .hotspot {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: #f59e0b;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+            animation: pulse 2s infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(245, 158, 11, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+        }
+
+        /* Tooltips para hotspots */
+        .hotspot-content {
+            display: none;
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 280px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            color: #333;
+            font-size: 0.9rem;
+            text-align: left;
+            z-index: 20;
+            border-left: 4px solid #f59e0b;
+        }
+        .hotspot:hover .hotspot-content { display: block; animation: fadeIn 0.3s; }
+
+        /* Contenedores de marcadores de posición (Placeholders) */
+        .placeholder-media {
+            background: repeating-linear-gradient(45deg, #e2e8f0, #e2e8f0 10px, #cbd5e1 10px, #cbd5e1 20px);
+            border: 3px dashed #94a3b8;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #475569;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Navegación flotante */
+        .floating-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 50;
+        }
+
+        /* Elementos clickeables */
+        .interactive-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .interactive-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estilo base para textos grandes y legibles */
+        p { font-size: 1.125rem; line-height: 1.75; color: #334155; margin-bottom: 1rem; }
+        h1, h2, h3 { font-family: 'Outfit', sans-serif; color: #0f172a; }
+        .serif-text { font-family: 'Lora', serif; }
+    </style>
+</head>
+<body class="text-gray-800 antialiased">
+
+    <!-- BARRA DE NAVEGACIÓN SUPERIOR -->
+    <header class="bg-primary text-white p-4 shadow-md sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold tracking-wide truncate"><i class="fas fa-brain mr-2"></i> Epistemología del Lenguaje</h1>
+            <button onclick="navTo('home')" class="bg-white text-primary px-4 py-2 rounded-full font-semibold hover:bg-gray-100 transition text-sm">
+                <i class="fas fa-home mr-1"></i> Inicio
+            </button>
+        </div>
+    </header>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <main class="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
+
+        <!-- ========================================== -->
+        <!-- PANTALLA 0: INICIO (LÍNEA DE TIEMPO)         -->
+        <!-- ========================================== -->
+        <section id="view-home" class="view-section active">
+            <div class="text-center mb-12 mt-8">
+                <span class="text-secondary font-bold uppercase tracking-widest text-sm">Unidad interactiva</span>
+                <h2 class="text-4xl md:text-5xl font-extrabold mt-2 mb-6 text-primary leading-tight">Origen y Naturaleza del Lenguaje:<br><span class="text-secondary">Una Genealogía Teórica</span></h2>
+                <p class="max-w-3xl mx-auto text-xl serif-text">La comprensión de cómo se adquiere el lenguaje determina directamente las estrategias pedagógicas. Explora las tres corrientes teóricas dominantes que fundamentan la praxis docente.</p>
+            </div>
+
+            <!-- Objetivos de aprendizaje (Iconos) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 max-w-4xl mx-auto">
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-secondary text-center">
+                    <i class="fas fa-search text-3xl text-secondary mb-4"></i>
+                    <h3 class="font-bold text-lg mb-2">Analizar</h3>
+                    <p class="text-sm">Los argumentos centrales de cada paradigma.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-accent text-center">
+                    <i class="fas fa-balance-scale text-3xl text-accent mb-4"></i>
+                    <h3 class="font-bold text-lg mb-2">Contrastar</h3>
+                    <p class="text-sm">Fortalezas y debilidades de cada modelo.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-primary text-center">
+                    <i class="fas fa-chalkboard-teacher text-3xl text-primary mb-4"></i>
+                    <h3 class="font-bold text-lg mb-2">Vincular</h3>
+                    <p class="text-sm">Teoría con didáctica de la lengua.</p>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-bold text-center mb-8 border-b-2 inline-block border-gray-200 pb-2">Selecciona un Paradigma para Comenzar</h3>
+
+            <!-- Línea de tiempo interactiva -->
+            <div class="relative max-w-4xl mx-auto">
+                <!-- Línea conectora -->
+                <div class="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-gray-300 -translate-y-1/2 z-0"></div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+                    <!-- Nodo 1 -->
+                    <div onclick="navTo('amb-1')" class="interactive-card bg-white rounded-2xl p-6 shadow-lg border-2 border-transparent hover:border-secondary flex flex-col items-center text-center">
+                        <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl font-bold mb-4">1</div>
+                        <span class="text-gray-500 font-bold mb-1">1920 - 1950s</span>
+                        <h4 class="text-xl font-extrabold text-primary mb-3">Ambientalista</h4>
+                        <p class="text-sm text-gray-600 mb-4">Conductismo (Skinner)</p>
+                        <div class="placeholder-media w-full h-32 rounded-lg text-sm mb-4">
+                            <i class="fas fa-project-diagram text-2xl mb-1"></i>
+                            [Animación: Estímulo-Respuesta]<br>(300x150px)
+                        </div>
+                        <button class="mt-auto text-secondary font-bold hover:underline">Explorar <i class="fas fa-arrow-right ml-1"></i></button>
+                    </div>
+
+                    <!-- Nodo 2 -->
+                    <div onclick="navTo('nat-1')" class="interactive-card bg-white rounded-2xl p-6 shadow-lg border-2 border-transparent hover:border-secondary flex flex-col items-center text-center">
+                        <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-2xl font-bold mb-4">2</div>
+                        <span class="text-gray-500 font-bold mb-1">1959 - 1980s</span>
+                        <h4 class="text-xl font-extrabold text-primary mb-3">Nativista</h4>
+                        <p class="text-sm text-gray-600 mb-4">Innatismo (Chomsky)</p>
+                        <div class="placeholder-media w-full h-32 rounded-lg text-sm mb-4">
+                            <i class="fas fa-brain text-2xl mb-1"></i>
+                            [Imagen: Cerebro "GU"]<br>(300x150px)
+                        </div>
+                        <button class="mt-auto text-secondary font-bold hover:underline">Explorar <i class="fas fa-arrow-right ml-1"></i></button>
+                    </div>
+
+                    <!-- Nodo 3 -->
+                    <div onclick="navTo('cog-1')" class="interactive-card bg-white rounded-2xl p-6 shadow-lg border-2 border-transparent hover:border-secondary flex flex-col items-center text-center">
+                        <div class="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-2xl font-bold mb-4">3</div>
+                        <span class="text-gray-500 font-bold mb-1">1970s - Actualidad</span>
+                        <h4 class="text-xl font-extrabold text-primary mb-3">Cognitivista</h4>
+                        <p class="text-sm text-gray-600 mb-4">Constructivismo / Interaccionismo</p>
+                        <div class="placeholder-media w-full h-32 rounded-lg text-sm mb-4">
+                            <i class="fas fa-users text-2xl mb-1"></i>
+                            [Foto: Interacción Adulto-Niño]<br>(300x150px)
+                        </div>
+                        <button class="mt-auto text-secondary font-bold hover:underline">Explorar <i class="fas fa-arrow-right ml-1"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-16 text-center">
+                <button onclick="navTo('sintesis')" class="bg-dark text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-800 transition shadow-lg">
+                    Ir directo a Síntesis y Evaluación <i class="fas fa-tasks ml-2"></i>
+                </button>
+            </div>
+            
+            <!-- Accesos rápidos a recursos -->
+            <div class="mt-8 flex justify-center gap-4">
+                <button onclick="navTo('glosario')" class="text-primary underline hover:text-secondary font-semibold"><i class="fas fa-book-open"></i> Glosario</button>
+                <button onclick="navTo('referencias')" class="text-primary underline hover:text-secondary font-semibold"><i class="fas fa-link"></i> Referencias</button>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SECCIÓN 1: AMBIENTALISTA                   -->
+        <!-- ========================================== -->
+        
+        <!-- PÁGINA 1.1 -->
+        <section id="view-amb-1" class="view-section">
+            <div class="text-secondary font-bold uppercase tracking-wider text-sm mb-1 block">1. Paradigma Ambientalista</div>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-primary mb-6 border-b-4 border-secondary inline-block pb-2">1.1 Conceptualización</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div>
+                    <p class="text-xl serif-text font-semibold text-primary">El lenguaje como conducta verbal aprendida.</p>
+                    <p>Para teóricos como <strong>B.F. Skinner</strong>, el lenguaje no es una facultad mental distinta, sino un comportamiento más. Se adquiere a través de los mismos mecanismos que cualquier otra conducta:</p>
+                    <ul class="list-none space-y-3 mt-4 mb-6">
+                        <li class="bg-white p-3 rounded shadow-sm border-l-4 border-blue-500"><i class="fas fa-copy text-blue-500 w-6"></i> <strong>Imitación</strong></li>
+                        <li class="bg-white p-3 rounded shadow-sm border-l-4 border-green-500"><i class="fas fa-link text-green-500 w-6"></i> <strong>Asociación</strong></li>
+                        <li class="bg-white p-3 rounded shadow-sm border-l-4 border-accent"><i class="fas fa-plus-circle text-accent w-6"></i> <strong>Refuerzo</strong></li>
+                    </ul>
+                    <p>El individuo es una <em>tabula rasa</em> cuyo repertorio lingüístico es moldeado exclusivamente por el entorno. La unidad de análisis es la <strong>conducta observable</strong>.</p>
+                    
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
+                        <h4 class="font-bold text-blue-800 flex items-center"><i class="fas fa-graduation-cap mr-2"></i> Conexión Curricular</h4>
+                        <p class="text-sm mt-2 mb-0">Este modelo sustenta el <strong>método audiolingual</strong> (repetición de patrones o <em>drills</em> y refuerzo positivo ante la producción correcta).</p>
+                    </div>
+                </div>
+
+                <!-- Elemento Interactivo: Infografía Clickeable -->
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                    <h3 class="font-bold text-xl mb-4 text-center">El Proceso de Refuerzo <br><span class="text-sm font-normal text-gray-500">(Haz clic en cada paso)</span></h3>
+                    
+                    <div class="space-y-4">
+                        <div onclick="toggleInfo('amb-info-1')" class="interactive-card bg-gray-50 p-4 rounded-lg border-2 border-dashed border-gray-300">
+                            <div class="flex items-center justify-between">
+                                <span class="font-bold text-lg">1. [Estímulo] El niño ve un perro.</span>
+                                <i class="fas fa-chevron-down text-gray-400"></i>
+                            </div>
+                            <div id="amb-info-1" class="hidden mt-3 p-3 bg-blue-100 text-blue-800 rounded">
+                                Objeto o evento del entorno que provoca una reacción.
+                            </div>
+                        </div>
+
+                        <div onclick="toggleInfo('amb-info-2')" class="interactive-card bg-gray-50 p-4 rounded-lg border-2 border-dashed border-gray-300">
+                            <div class="flex items-center justify-between">
+                                <span class="font-bold text-lg">2. [Respuesta] El niño dice "pe-o".</span>
+                                <i class="fas fa-chevron-down text-gray-400"></i>
+                            </div>
+                            <div id="amb-info-2" class="hidden mt-3 p-3 bg-green-100 text-green-800 rounded">
+                                Conducta verbal inicial, una aproximación al modelo adulto por imitación.
+                            </div>
+                        </div>
+
+                        <div onclick="toggleInfo('amb-info-3')" class="interactive-card bg-gray-50 p-4 rounded-lg border-2 border-dashed border-gray-300">
+                            <div class="flex items-center justify-between">
+                                <span class="font-bold text-lg">3. [Refuerzo] El adulto dice "¡Sí, perro!".</span>
+                                <i class="fas fa-chevron-down text-gray-400"></i>
+                            </div>
+                            <div id="amb-info-3" class="hidden mt-3 p-3 bg-yellow-100 text-yellow-800 rounded">
+                                Consecuencia positiva que aumenta la probabilidad de que la conducta se repita y se perfeccione.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA 1.2 -->
+        <section id="view-amb-2" class="view-section">
+            <div class="text-secondary font-bold uppercase tracking-wider text-sm mb-1 block">1. Paradigma Ambientalista</div>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-primary mb-6 border-b-4 border-secondary inline-block pb-2">1.2 Análisis Crítico</h2>
+            
+            <p class="text-xl mb-6 text-center max-w-3xl mx-auto">Herramienta de Análisis: La crítica de la <strong>"Pobreza del Estímulo"</strong>.</p>
+            <p class="text-center text-sm text-gray-500 mb-8"><i class="fas fa-info-circle"></i> Pasa el cursor (o haz clic) sobre los puntos naranjas para descubrir los argumentos.</p>
+
+            <div class="relative w-full max-w-4xl mx-auto h-[500px] placeholder-media mb-8">
+                <span class="absolute top-4 left-4 bg-white px-3 py-1 rounded shadow text-sm font-bold">[Imagen: Balanza desequilibrada - Aportes vs Críticas (800x500px)]</span>
+                <i class="fas fa-balance-scale text-6xl text-gray-400 opacity-50 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></i>
+                
+                <!-- Hotspots -->
+                <div class="hotspot" style="top: 20%; left: 25%;">
+                    1
+                    <div class="hotspot-content">
+                        <strong>Aportes:</strong> Énfasis en el rol del input ambiental y la interacción. Primer intento sistemático de explicar el aprendizaje del lenguaje de forma empírica.
+                    </div>
+                </div>
+
+                <div class="hotspot" style="top: 40%; left: 75%;">
+                    2
+                    <div class="hotspot-content">
+                        <strong>Crítica (Creatividad):</strong> No explica la capacidad humana de producir y comprender un número infinito de oraciones nunca antes escuchadas (productividad).
+                    </div>
+                </div>
+
+                <div class="hotspot" style="bottom: 30%; left: 65%;">
+                    3
+                    <div class="hotspot-content">
+                        <strong>Crítica (Errores Sistemáticos):</strong> No explica errores de sobrerregularización (ej. "yo no sabo", "rompido"). Estos no son imitados, sugieren la aplicación de reglas internas.
+                    </div>
+                </div>
+
+                <div class="hotspot" style="bottom: 15%; left: 85%;">
+                    4
+                    <div class="hotspot-content">
+                        <strong>Crítica (Rapidez/Universalidad):</strong> No justifica por qué todos los niños, con inputs muy variables, adquieren la gramática con velocidad y éxito similares.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA 1.3 -->
+        <section id="view-amb-3" class="view-section">
+            <div class="text-secondary font-bold uppercase tracking-wider text-sm mb-1 block">1. Paradigma Ambientalista</div>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-primary mb-6 border-b-4 border-secondary inline-block pb-2">1.3 Verificación</h2>
+            
+            <div class="bg-white rounded-2xl shadow-xl p-8 max-w-3xl mx-auto border-t-8 border-primary">
+                <h3 class="text-2xl font-bold mb-6 text-center">Clasifica el enunciado</h3>
+                <p class="text-center mb-8">Lee la afirmación y selecciona si corresponde a un postulado de la teoría o a una crítica hacia ella.</p>
+                
+                <div class="bg-gray-100 p-6 rounded-xl text-center mb-8 text-xl serif-text font-medium text-dark italic" id="amb-quiz-text">
+                    "La sobrerregularización verbal demuestra la existencia de reglas internas."
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="checkQuiz('amb', 'postulado')" class="bg-blue-100 text-blue-800 hover:bg-blue-200 py-4 rounded-xl font-bold text-lg transition">
+                        Postulado Conductista
+                    </button>
+                    <button onclick="checkQuiz('amb', 'critica')" class="bg-red-100 text-red-800 hover:bg-red-200 py-4 rounded-xl font-bold text-lg transition">
+                        Crítica al Conductismo
+                    </button>
+                </div>
+
+                <div id="amb-quiz-feedback" class="hidden mt-6 p-4 rounded-lg text-center font-bold"></div>
+                
+                <div class="mt-6 text-center">
+                    <button onclick="nextQuizAmb()" class="text-sm text-gray-500 underline hidden" id="amb-quiz-next">Siguiente enunciado</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SECCIÓN 2: NATIVISTA                       -->
+        <!-- ========================================== -->
+
+        <!-- PÁGINA 2.1 -->
+        <section id="view-nat-1" class="view-section">
+            <div class="text-secondary font-bold uppercase tracking-wider text-sm mb-1 block">2. Paradigma Nativista</div>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-primary mb-6 border-b-4 border-secondary inline-block pb-2">2.1 Conceptualización</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div>
+                    <p class="text-xl serif-text font-semibold text-primary">La facultad del lenguaje como componente innato.</p>
+                    <p><strong>Noam Chomsky</strong> postula que los seres humanos nacen con una <strong>Gramática Universal (GU)</strong>, un conjunto de principios abstractos comunes a todas las lenguas.</p>
+                    <p>El entorno no "enseña" la gramática, sino que <strong>activa y fija los parámetros</strong> de esta dotación biológica mediante un <strong>Dispositivo de Adquisición del Lenguaje (DAL)</strong>.</p>
+                    
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
+                        <h4 class="font-bold text-blue-800 flex items-center"><i class="fas fa-graduation-cap mr-2"></i> Conexión Curricular</h4>
+                        <p class="text-sm mt-2 mb-0">Influyó en métodos que distinguen entre <em>adquisición</em> (subconsciente, guiada por GU) y <em>aprendizaje</em> (consciente), como el <strong>Enfoque Natural</strong> (Krashen).</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 flex flex-col items-center justify-center">
+                    <h3 class="font-bold text-xl mb-6 text-center">El Modelo Chomskyano <br><span class="text-sm font-normal text-gray-500">(Haz clic en el cuadro central)</span></h3>
+                    
+                    <div class="flex items-center justify-center w-full gap-2 text-center text-sm md:text-base font-bold">
+                        <!-- Caja 1 -->
+                        <div class="bg-gray-100 p-4 rounded-lg w-1/3 shadow-inner">
+                            Datos Lingüísticos Primarios<br><span class="text-gray-500 font-normal">(Input)</span>
+                        </div>
+                        <i class="fas fa-arrow-right text-gray-400 text-xl"></i>
+                        <!-- Caja 2 (Interactiva) -->
+                        <div onclick="toggleInfo('nat-dal-info')" class="interactive-card bg-primary text-white p-4 rounded-lg w-1/3 shadow-lg border-2 border-accent relative">
+                            DAL + GU
+                            <div class="absolute -top-3 -right-3 w-6 h-6 bg-accent rounded-full animate-pulse"></div>
+                        </div>
+                        <i class="fas fa-arrow-right text-gray-400 text-xl"></i>
+                        <!-- Caja 3 -->
+                        <div class="bg-gray-100 p-4 rounded-lg w-1/3 shadow-inner">
+                            Gramática L1<br><span class="text-gray-500 font-normal">(Output)</span>
+                        </div>
+                    </div>
+
+                    <div id="nat-dal-info" class="hidden mt-6 p-4 bg-blue-50 text-blue-900 border-l-4 border-primary rounded text-sm text-left shadow-inner">
+                        <strong>Dispositivo de Adquisición del Lenguaje (DAL):</strong> Mecanismo neurocognitivo innato que contiene la Gramática Universal. Su función es formular hipótesis sobre las reglas de la lengua a partir del input recibido.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA 2.2 -->
+        <section id="view-nat-2" class="view-section">
+            <div class="text-secondary font-bold uppercase tracking-wider text-sm mb-1 block">2. Paradigma Nativista</div>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-primary mb-6 border-b-4 border-secondary inline-block pb-2">2.2 Análisis Crítico</h2>
+            
+            <p class="text-xl mb-6 text-center max-w-3xl mx-auto">Herramienta de Análisis: El concepto de <strong>Principios y Parámetros</strong>.</p>
+            
+            <div class="relative w-full max-w-4xl mx-auto h-[500px] placeholder-media mb-8">
+                <span class="absolute top-4 left-4 bg-white px-3 py-1 rounded shadow text-sm font-bold">[Imagen: Cerebro Humano / Redes Neuronales (800x500px)]</span>
+                <i class="fas fa-brain text-6xl text-gray-400 opacity-50 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></i>
+                
+                <div class="hotspot" style="top: 15%; left: 50%;">
+                    1
+                    <div class="hotspot-content">
+                        <strong>Aportes:</strong> Explica la rapidez, universalidad y creatividad del lenguaje. Proporciona una solución teórica al problema de la pobreza del estímulo.
+                    </div>
+                </div>
+
+                <div class="hotspot" style="top: 50%; left: 20%;">
+                    2
+                    <div class="hotspot-content">
+                        <strong>Crítica (Abstracción):</strong> La naturaleza y contenido de la GU son altamente abstractos y de difícil comprobación empírica. No hay consenso sobre su localización neurobiológica.
+                    </div>
+                </div>
+
+                <div class="hotspot" style="top: 70%; left: 60%;">
+                    3
+                    <div class="hotspot-content">
+                        <strong>Crítica (Rol del Input):</strong> Minimiza el papel de la interacción social, la cognición general y el uso comunicativo del lenguaje en la adquisición.
+                    </div>
+                </div>
+
+                <div class="hotspot" style="top: 40%; left: 80%;">
+                    4
+                    <div class="hotspot-content">
+                        <strong>Crítica (Foco Sintáctico):</strong> El modelo inicial se centra casi exclusivamente en la sintaxis, prestando menor atención al desarrollo semántico y pragmático.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA 2.3 -->
+        <section id="view-nat-3" class="view-section">
+            <div class="text-secondary font-bold uppercase tracking-wider text-sm mb-1 block">2. Paradigma Nativista</div>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-primary mb-6 border-b-4 border-secondary inline-block pb-2">2.3 Verificación</h2>
+            
+            <div class="bg-white rounded-2xl shadow-xl p-8 max-w-3xl mx-auto border-t-8 border-primary">
+                <h3 class="text-2xl font-bold mb-4">Análisis del Modelo</h3>
+                <p class="mb-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <i class="fas fa-eye text-primary mr-2"></i> Imagina una escena donde un niño escucha a dos adultos hablar. Según la teoría nativista, el habla de los adultos es el <strong>input lingüístico</strong> (datos primarios) y el cerebro del niño alberga la <strong>Gramática Universal</strong> que permite la <strong>fijación de parámetros</strong>.
+                </p>
+
+                <h4 class="font-bold text-lg mb-4 text-primary">Pregunta de evaluación:</h4>
+                <p class="text-xl serif-text mb-6">Desde la perspectiva de sus críticos, ¿cuál es la principal deficiencia del modelo nativista al centrarse en el mecanismo innato?</p>
+                
+                <div class="space-y-3">
+                    <button onclick="checkMultipleChoice('nat', this, false)" class="w-full text-left p-4 rounded-lg border border-gray-300 hover:bg-gray-50 transition">
+                        a) Su incapacidad para explicar la estructura sintáctica.
+                    </button>
+                    <button onclick="checkMultipleChoice('nat', this, false)" class="w-full text-left p-4 rounded-lg border border-gray-300 hover:bg-gray-50 transition">
+                        b) Su sobreestimación de la imitación como mecanismo de aprendizaje.
+                    </button>
+                    <button onclick="checkMultipleChoice('nat', this, true)" class="w-full text-left p-4 rounded-lg border border-gray-300 hover:bg-gray-50 transition font-medium">
+                        c) Su subestimación del rol de la interacción social y el contexto comunicativo.
+                    </button>
+                    <button onclick="checkMultipleChoice('nat', this, false)" class="w-full text-left p-4 rounded-lg border border-gray-300 hover:bg-gray-50 transition">
+                        d) Su dependencia exclusiva de conductas observables.
+                    </button>
+                </div>
+
+                <div id="nat-quiz-feedback" class="hidden mt-6 p-4 rounded-lg text-left text-sm font-medium"></div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SECCIÓN 3: COGNITIVISTA                    -->
+        <!-- ========================================== -->
+
+        <!-- PÁGINA 3.1 -->
+        <section id="view-cog-1" class="view-section">
+            <div class="text-secondary font-bold uppercase tracking-wider text-sm mb-1 block">3. Paradigma Cognitivista</div>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-primary mb-6 border-b-4 border-secondary inline-block pb-2">3.1 Conceptualización</h2>
+            
+            <p class="text-xl serif-text font-semibold text-primary mb-6">El lenguaje como manifestación del desarrollo cognitivo general y la interacción, no un módulo innato separado.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div onclick="toggleModal('modal-piaget')" class="interactive-card bg-white p-6 rounded-xl shadow-lg border-t-4 border-blue-500 text-center">
+                    <h3 class="font-bold text-lg text-blue-700 mb-2">Constructivismo</h3>
+                    <p class="text-sm text-gray-500 mb-4">(J. Piaget)</p>
+                    <button class="text-blue-500 font-bold text-sm uppercase">Ver postulado <i class="fas fa-search-plus"></i></button>
+                </div>
+
+                <div onclick="toggleModal('modal-vygotsky')" class="interactive-card bg-white p-6 rounded-xl shadow-lg border-t-4 border-green-500 text-center">
+                    <h3 class="font-bold text-lg text-green-700 mb-2">Interaccionismo Social</h3>
+                    <p class="text-sm text-gray-500 mb-4">(L. Vygotsky)</p>
+                    <button class="text-green-500 font-bold text-sm uppercase">Ver postulado <i class="fas fa-search-plus"></i></button>
+                </div>
+
+                <div onclick="toggleModal('modal-tomasello')" class="interactive-card bg-white p-6 rounded-xl shadow-lg border-t-4 border-purple-500 text-center">
+                    <h3 class="font-bold text-lg text-purple-700 mb-2">Basado en el Uso</h3>
+                    <p class="text-sm text-gray-500 mb-4">(M. Tomasello)</p>
+                    <button class="text-purple-500 font-bold text-sm uppercase">Ver postulado <i class="fas fa-search-plus"></i></button>
+                </div>
+            </div>
+
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6 max-w-4xl mx-auto">
+                <h4 class="font-bold text-blue-800 flex items-center"><i class="fas fa-graduation-cap mr-2"></i> Conexión Curricular</h4>
+                <p class="text-sm mt-2 mb-0">Base del <strong>Enfoque Comunicativo</strong> y el <strong>Aprendizaje Basado en Tareas</strong> (interacción auténtica, negociación de significado, uso real).</p>
+            </div>
+
+            <!-- Modales (Ventanas emergentes falsas) -->
+            <div id="modal-piaget" class="hidden mt-6 bg-blue-100 p-6 rounded-xl border border-blue-200">
+                <h4 class="font-bold text-blue-800 mb-2"><i class="fas fa-cube mr-2"></i> Constructivismo (Piaget)</h4>
+                <p class="text-sm">El niño construye activamente su conocimiento a partir de su interacción con el mundo. <strong>El desarrollo cognitivo precede al lingüístico</strong> (ej. concepto de permanencia del objeto antes que la palabra).</p>
+            </div>
+            <div id="modal-vygotsky" class="hidden mt-6 bg-green-100 p-6 rounded-xl border border-green-200">
+                <h4 class="font-bold text-green-800 mb-2"><i class="fas fa-users mr-2"></i> Interaccionismo Social (Vygotsky)</h4>
+                <p class="text-sm">Lenguaje y pensamiento se co-desarrollan. El aprendizaje ocurre en la <strong>Zona de Desarrollo Próximo (ZDP)</strong> mediante la mediación de un "otro" más experto.</p>
+            </div>
+            <div id="modal-tomasello" class="hidden mt-6 bg-purple-100 p-6 rounded-xl border border-purple-200">
+                <h4 class="font-bold text-purple-800 mb-2"><i class="fas fa-pattern mr-2"></i> Basado en el Uso (Tomasello)</h4>
+                <p class="text-sm">La gramática emerge de la capacidad cognitiva de identificar patrones en el input y de la necesidad social de comprender las intenciones comunicativas de otros.</p>
+            </div>
+        </section>
+
+        <!-- PÁGINA 3.2 -->
+        <section id="view-cog-2" class="view-section">
+            <div class="text-secondary font-bold uppercase tracking-wider text-sm mb-1 block">3. Paradigma Cognitivista</div>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-primary mb-6 border-b-4 border-secondary inline-block pb-2">3.2 Análisis Crítico</h2>
+            
+            <p class="text-xl mb-6 text-center max-w-3xl mx-auto">Herramientas: La <strong>Zona de Desarrollo Próximo (ZDP)</strong> y el <strong>Andamiaje</strong> (Scaffolding).</p>
+            
+            <div class="relative w-full max-w-4xl mx-auto h-[500px] placeholder-media mb-8">
+                <span class="absolute top-4 left-4 bg-white px-3 py-1 rounded shadow text-sm font-bold">[Ilustración: Un andamio de construcción (800x500px)]</span>
+                <i class="fas fa-building text-6xl text-gray-400 opacity-50 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></i>
+                
+                <div class="hotspot" style="top: 30%; left: 30%;">
+                    1
+                    <div class="hotspot-content">
+                        <strong>Aportes:</strong> Integra el desarrollo lingüístico con la cognición, cultura y sociedad. Rol central al uso comunicativo. Empíricamente más observable que el innatismo.
+                    </div>
+                </div>
+
+                <div class="hotspot" style="bottom: 20%; left: 50%;">
+                    2
+                    <div class="hotspot-content">
+                        <strong>Crítica (Universalidad):</strong> Dificultad para explicar por qué, a pesar de la diversidad de contextos de interacción, los niños convergen en sistemas gramaticales altamente complejos y sistemáticos.
+                    </div>
+                </div>
+
+                <div class="hotspot" style="top: 40%; left: 75%;">
+                    3
+                    <div class="hotspot-content">
+                        <strong>Crítica (Especificidad):</strong> No aclara completamente por qué las estructuras del lenguaje son tan particulares y no replican simplemente otras estructuras cognitivas generales.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA 3.3 -->
+        <section id="view-cog-3" class="view-section">
+            <div class="text-secondary font-bold uppercase tracking-wider text-sm mb-1 block">3. Paradigma Cognitivista</div>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-primary mb-6 border-b-4 border-secondary inline-block pb-2">3.3 Verificación</h2>
+            
+            <div class="bg-white rounded-2xl shadow-xl p-8 max-w-3xl mx-auto border-t-8 border-primary">
+                <h3 class="text-2xl font-bold mb-4 text-center">Reconstruye el Andamiaje</h3>
+                <p class="text-center mb-6">Haz clic en las etapas en el <strong>orden cronológico correcto</strong> para describir el proceso de adquisición interaccionista.</p>
+
+                <div class="flex flex-col gap-3 mb-6" id="sequence-container">
+                    <!-- Los botones están desordenados intencionalmente -->
+                    <button onclick="selectSequence(this, 3)" class="seq-btn text-left p-4 rounded-lg bg-gray-50 border border-gray-300 hover:bg-blue-50 transition relative pl-10">
+                        <span class="seq-number absolute left-3 font-bold text-gray-400">?</span>
+                        El niño, tras varias interacciones similares, asocia "galleta" con el objeto.
+                    </button>
+                    <button onclick="selectSequence(this, 1)" class="seq-btn text-left p-4 rounded-lg bg-gray-50 border border-gray-300 hover:bg-blue-50 transition relative pl-10">
+                        <span class="seq-number absolute left-3 font-bold text-gray-400">?</span>
+                        El niño señala una galleta y emite un sonido indiferenciado ("da").
+                    </button>
+                    <button onclick="selectSequence(this, 4)" class="seq-btn text-left p-4 rounded-lg bg-gray-50 border border-gray-300 hover:bg-blue-50 transition relative pl-10">
+                        <span class="seq-number absolute left-3 font-bold text-gray-400">?</span>
+                        Posteriormente, el niño dice "quiero galleta" para expresar su deseo autónomamente.
+                    </button>
+                    <button onclick="selectSequence(this, 2)" class="seq-btn text-left p-4 rounded-lg bg-gray-50 border border-gray-300 hover:bg-blue-50 transition relative pl-10">
+                        <span class="seq-number absolute left-3 font-bold text-gray-400">?</span>
+                        El adulto interpreta la intención y responde con andamiaje: "¿Quieres la galleta?".
+                    </button>
+                </div>
+
+                <div class="text-center">
+                    <button onclick="checkSequence()" class="bg-primary text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-800 transition">Verificar Orden</button>
+                    <button onclick="resetSequence()" class="ml-2 text-gray-500 underline text-sm">Reiniciar</button>
+                </div>
+
+                <div id="seq-feedback" class="hidden mt-6 p-4 bg-green-100 text-green-800 rounded-lg text-sm font-medium">
+                    <i class="fas fa-check-circle mr-2"></i> Correcto. Esta secuencia ilustra cómo la intención inicial es moldeada lingüísticamente a través del andamiaje en la ZDP, un proceso central para el interaccionismo.
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SÍNTESIS Y EVALUACIÓN FINAL                -->
+        <!-- ========================================== -->
+        <section id="view-sintesis" class="view-section">
+            <h2 class="text-4xl font-extrabold text-primary mt-2 mb-8 text-center"><i class="fas fa-compress-arrows-alt text-secondary mr-2"></i> Síntesis Comparativa</h2>
+            
+            <div class="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200 mb-10">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-primary text-white text-center">
+                            <th class="p-4 border-r border-blue-700 w-1/4">Característica</th>
+                            <th class="p-4 border-r border-blue-700 w-1/4 bg-blue-800">Ambientalista</th>
+                            <th class="p-4 border-r border-blue-700 w-1/4 bg-blue-900">Nativista</th>
+                            <th class="p-4 w-1/4 bg-dark">Cognitivista / Interaccionista</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm">
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="p-4 font-bold bg-gray-100 border-r">Mecanismo Central</td>
+                            <td class="p-4 border-r cursor-pointer relative group text-center" onclick="revealCell(this)">
+                                <span class="blur-sm group-hover:blur-none transition-all duration-300 select-none">Refuerzo / Imitación</span>
+                                <div class="absolute inset-0 flex justify-center items-center bg-gray-50 bg-opacity-80 group-hover:hidden text-xs text-gray-500"><i class="fas fa-eye mr-1"></i> Revelar</div>
+                            </td>
+                            <td class="p-4 border-r cursor-pointer relative group text-center" onclick="revealCell(this)">
+                                <span class="blur-sm group-hover:blur-none transition-all duration-300 select-none">Activación de la GU</span>
+                                <div class="absolute inset-0 flex justify-center items-center bg-gray-50 bg-opacity-80 group-hover:hidden text-xs text-gray-500"><i class="fas fa-eye mr-1"></i> Revelar</div>
+                            </td>
+                            <td class="p-4 cursor-pointer relative group text-center" onclick="revealCell(this)">
+                                <span class="blur-sm group-hover:blur-none transition-all duration-300 select-none">Construcción social/cognitiva</span>
+                                <div class="absolute inset-0 flex justify-center items-center bg-gray-50 bg-opacity-80 group-hover:hidden text-xs text-gray-500"><i class="fas fa-eye mr-1"></i> Revelar</div>
+                            </td>
+                        </tr>
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="p-4 font-bold bg-gray-100 border-r">Rol del Individuo</td>
+                            <td class="p-4 border-r cursor-pointer relative group text-center" onclick="revealCell(this)">
+                                <span class="blur-sm group-hover:blur-none transition-all duration-300 select-none">Pasivo, receptor (Tabula rasa)</span>
+                                <div class="absolute inset-0 flex justify-center items-center bg-gray-50 bg-opacity-80 group-hover:hidden text-xs text-gray-500"><i class="fas fa-eye mr-1"></i> Revelar</div>
+                            </td>
+                            <td class="p-4 border-r cursor-pointer relative group text-center" onclick="revealCell(this)">
+                                <span class="blur-sm group-hover:blur-none transition-all duration-300 select-none">Activo, procesador innato</span>
+                                <div class="absolute inset-0 flex justify-center items-center bg-gray-50 bg-opacity-80 group-hover:hidden text-xs text-gray-500"><i class="fas fa-eye mr-1"></i> Revelar</div>
+                            </td>
+                            <td class="p-4 cursor-pointer relative group text-center" onclick="revealCell(this)">
+                                <span class="blur-sm group-hover:blur-none transition-all duration-300 select-none">Activo, constructor social</span>
+                                <div class="absolute inset-0 flex justify-center items-center bg-gray-50 bg-opacity-80 group-hover:hidden text-xs text-gray-500"><i class="fas fa-eye mr-1"></i> Revelar</div>
+                            </td>
+                        </tr>
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="p-4 font-bold bg-gray-100 border-r">Rol del Entorno</td>
+                            <td class="p-4 border-r text-center">Moldeador absoluto</td>
+                            <td class="p-4 border-r text-center">Desencadenante (Trigger)</td>
+                            <td class="p-4 text-center">Facilitador y mediador</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-4 font-bold bg-gray-100 border-r text-primary">Implicación Pedagógica</td>
+                            <td class="p-4 border-r font-bold text-center">Método Audiolingual</td>
+                            <td class="p-4 border-r font-bold text-center">Enfoque Natural</td>
+                            <td class="p-4 font-bold text-center">Enfoque Comunicativo</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Autoevaluación y Reflexión -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Aplicación Práctica -->
+                <div class="bg-amber-50 rounded-xl p-6 border border-amber-200">
+                    <h3 class="text-xl font-bold text-amber-800 mb-4"><i class="fas fa-lightbulb"></i> Reflexión Práctica</h3>
+                    <p class="text-sm">A partir de la tabla, reflexiona sobre la corrección de errores en el aula.</p>
+                    <p class="font-bold italic mt-2 text-dark mb-4">¿Cómo abordaría un docente de cada paradigma un error de sobrerregularización como "yo no sabo"?</p>
+                    
+                    <button onclick="toggleInfo('reflexion-respuesta')" class="w-full bg-amber-200 text-amber-900 font-bold py-3 rounded-lg hover:bg-amber-300 transition shadow-sm">
+                        Ver análisis sugerido <i class="fas fa-chevron-down ml-1"></i>
+                    </button>
+                    
+                    <div id="reflexion-respuesta" class="hidden mt-4 p-5 bg-white border border-amber-200 rounded-lg text-sm text-gray-800 shadow-inner">
+                        <ul class="space-y-3">
+                            <li><strong class="text-blue-800">Ambientalista:</strong> Lo vería como un hábito incorrecto por falta de refuerzo adecuado. Corregiría explícitamente y pediría al estudiante que repita la forma correcta ("no sé").</li>
+                            <li><strong class="text-green-800">Nativista:</strong> Lo consideraría evidencia de que el niño está aplicando reglas de la Gramática Universal de forma creativa. No priorizaría la corrección explícita, confiando en que la exposición al input ajustará el parámetro gradualmente.</li>
+                            <li><strong class="text-purple-800">Cognitivista / Interaccionista:</strong> Lo vería como una etapa natural de construcción de la lengua. Proveería andamiaje reformulando la oración durante la interacción de forma natural: <em>"Ah, entiendo, no sabes cómo hacerlo"</em>.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Checklist -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                    <h3 class="text-xl font-bold text-primary mb-4"><i class="fas fa-check-square"></i> Checklist de Autoevaluación</h3>
+                    <div class="space-y-3 text-sm">
+                        <label class="flex items-start gap-3 cursor-pointer">
+                            <input type="checkbox" class="mt-1 w-4 h-4 text-primary rounded focus:ring-primary">
+                            <span>Puedo explicar el rol del refuerzo en la teoría conductista y su crítica principal.</span>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer">
+                            <input type="checkbox" class="mt-1 w-4 h-4 text-primary rounded focus:ring-primary">
+                            <span>Puedo definir Gramática Universal y Pobreza del Estímulo.</span>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer">
+                            <input type="checkbox" class="mt-1 w-4 h-4 text-primary rounded focus:ring-primary">
+                            <span>Puedo contrastar la visión de Piaget y Vygotsky sobre lenguaje-pensamiento.</span>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer">
+                            <input type="checkbox" class="mt-1 w-4 h-4 text-primary rounded focus:ring-primary">
+                            <span>Puedo asociar cada paradigma con un método de enseñanza.</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-10 bg-dark text-white p-6 rounded-xl text-center shadow-lg border-l-8 border-secondary">
+                <h3 class="font-bold text-xl mb-2">Próximos Pasos</h3>
+                <p class="text-gray-300">Las limitaciones de estos teóricos abren la puerta a la <strong>sociolingüística</strong> y la <strong>pragmática</strong>. En la siguiente unidad exploraremos cómo el contexto social define el uso real del lenguaje.</p>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- GLOSARIO                                   -->
+        <!-- ========================================== -->
+        <section id="view-glosario" class="view-section">
+            <h2 class="text-4xl font-extrabold text-primary mt-2 mb-8 border-b-4 border-secondary inline-block pb-2"><i class="fas fa-book-open mr-2"></i> Glosario Contextualizado</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-5 rounded-lg shadow-sm border-l-4 border-secondary">
+                    <h4 class="font-bold text-lg mb-1">Andamiaje (Scaffolding)</h4>
+                    <p class="text-sm text-gray-600">(Término de Bruner). Apoyo temporal de un experto a un aprendiz para realizar una tarea. En lingüística: reformulaciones y expansiones de adultos para guiar al niño.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow-sm border-l-4 border-secondary">
+                    <h4 class="font-bold text-lg mb-1">Conductismo</h4>
+                    <p class="text-sm text-gray-600">Corriente que define el aprendizaje como cambio en la conducta observable, resultado de asociación estímulo-respuesta y refuerzo.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow-sm border-l-4 border-primary">
+                    <h4 class="font-bold text-lg mb-1">Gramática Universal (GU)</h4>
+                    <p class="text-sm text-gray-600">(Término de Chomsky). Conocimiento lingüístico innato y abstracto que especifica los principios comunes a todas las lenguas humanas.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow-sm border-l-4 border-primary">
+                    <h4 class="font-bold text-lg mb-1">Innatismo</h4>
+                    <p class="text-sm text-gray-600">Postura teórica que sostiene que habilidades como la facultad del lenguaje están biológicamente pre-programadas y no se aprenden desde cero.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow-sm border-l-4 border-accent">
+                    <h4 class="font-bold text-lg mb-1">Pobreza del Estímulo</h4>
+                    <p class="text-sm text-gray-600">Argumento innatista: el input lingüístico recibido por niños es limitado e inconsistente, insuficiente para adquirir una gramática compleja sin guía innata.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow-sm border-l-4 border-green-500">
+                    <h4 class="font-bold text-lg mb-1">Zona de Desarrollo Próximo (ZDP)</h4>
+                    <p class="text-sm text-gray-600">(Término de Vygotsky). Distancia entre el nivel de desarrollo actual (solo) y el potencial (con guía de un experto o par capaz).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- REFERENCIAS                                -->
+        <!-- ========================================== -->
+        <section id="view-referencias" class="view-section">
+            <h2 class="text-4xl font-extrabold text-primary mt-2 mb-8 border-b-4 border-secondary inline-block pb-2"><i class="fas fa-link mr-2"></i> Referencias y Recursos</h2>
+            
+            <h3 class="font-bold text-xl text-dark mb-4 border-b pb-2">Multimedia Recomendada</h3>
+            <ul class="list-disc pl-6 mb-8 text-gray-700 space-y-2">
+                <li><i class="fab fa-youtube text-red-500 mr-2"></i> <strong>Video:</strong> "The Linguistics of Chomsky" - Entrevista teórica.</li>
+                <li><i class="fas fa-image text-blue-500 mr-2"></i> <strong>Infografía:</strong> "Piaget vs. Vygotsky: Language and Thought".</li>
+            </ul>
+
+            <h3 class="font-bold text-xl text-dark mb-4 border-b pb-2">Referencias (APA 7ma)</h3>
+            <div class="bg-white p-6 rounded-xl shadow-inner text-sm space-y-4 font-serif">
+                <p class="pl-6 -indent-6">Ambridge, B., & Lieven, E. V. (2011). <em>Child language acquisition: Contrasting theoretical approaches</em>. Cambridge University Press.</p>
+                <p class="pl-6 -indent-6">Chomsky, N. (1959). A Review of B. F. Skinner's Verbal Behavior. <em>Language, 35</em>(1), 26-58. https://doi.org/10.2307/411334</p>
+                <p class="pl-6 -indent-6">Chomsky, N. (1965). <em>Aspects of the theory of syntax</em>. MIT Press.</p>
+                <p class="pl-6 -indent-6">Piaget, J. (1959). <em>The language and thought of the child</em>. Routledge & Kegan Paul.</p>
+                <p class="pl-6 -indent-6">Skinner, B. F. (1957). <em>Verbal Behavior</em>. Appleton-Century-Crofts.</p>
+                <p class="pl-6 -indent-6">Tomasello, M. (2003). <em>Constructing a language: A usage-based theory of language acquisition</em>. Harvard University Press.</p>
+                <p class="pl-6 -indent-6">Vygotsky, L. S. (1962). <em>Thought and language</em>. MIT Press.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- BARRA DE NAVEGACIÓN INFERIOR (CONTROLES) -->
+    <nav class="floating-nav">
+        <button id="btn-prev" onclick="goPrev()" class="text-gray-500 hover:text-primary font-bold px-4 py-2 disabled:opacity-30"><i class="fas fa-chevron-left mr-2"></i> Anterior</button>
+        
+        <div class="flex gap-2" id="nav-dots">
+            <!-- Puntos de navegación dinámicos (JS) -->
+        </div>
+
+        <button id="btn-next" onclick="goNext()" class="text-primary hover:text-secondary font-bold px-4 py-2">Siguiente <i class="fas fa-chevron-right ml-2"></i></button>
+    </nav>
+
+    <!-- LÓGICA DE INTERACCIÓN (JAVASCRIPT) -->
+    <script>
+        // 1. SISTEMA DE NAVEGACIÓN
+        const views = [
+            'home', 
+            'amb-1', 'amb-2', 'amb-3', 
+            'nat-1', 'nat-2', 'nat-3', 
+            'cog-1', 'cog-2', 'cog-3', 
+            'sintesis', 'glosario', 'referencias'
+        ];
+        let currentIndex = 0;
+
+        function updateNavUI() {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(`view-${views[currentIndex]}`).classList.add('active');
+            
+            document.getElementById('btn-prev').disabled = currentIndex === 0;
+            document.getElementById('btn-next').style.display = currentIndex === views.length - 1 ? 'none' : 'block';
+
+            // Scroll al inicio
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function navTo(viewId) {
+            const index = views.indexOf(viewId);
+            if (index !== -1) {
+                currentIndex = index;
+                updateNavUI();
+            }
+        }
+
+        function goNext() {
+            if (currentIndex < views.length - 1) { currentIndex++; updateNavUI(); }
+        }
+
+        function goPrev() {
+            if (currentIndex > 0) { currentIndex--; updateNavUI(); }
+        }
+
+        // 2. INTERACCIONES UI (Acordeones y Modales)
+        function toggleInfo(id) {
+            const el = document.getElementById(id);
+            document.querySelectorAll('[id^="amb-info-"], #nat-dal-info').forEach(e => {
+                if(e.id !== id) e.classList.add('hidden'); // Cierra otros
+            });
+            el.classList.toggle('hidden');
+        }
+
+        function toggleModal(id) {
+            const el = document.getElementById(id);
+            document.querySelectorAll('[id^="modal-"]').forEach(e => {
+                if(e.id !== id) e.classList.add('hidden'); // Cierra otros
+            });
+            el.classList.toggle('hidden');
+        }
+
+        function revealCell(cell) {
+            const span = cell.querySelector('span');
+            const overlay = cell.querySelector('div');
+            span.classList.remove('blur-sm');
+            if(overlay) overlay.style.display = 'none';
+        }
+
+        // 3. LÓGICA DE CUESTIONARIOS
+        
+        // Quiz Ambientalista (Clasificar)
+        const ambQuestions = [
+            { text: "La sobrerregularización verbal demuestra la existencia de reglas internas.", type: "critica", fb: "Correcto. Aplicar reglas a verbos irregulares no es imitación." },
+            { text: "El lenguaje se adquiere por imitación.", type: "postulado", fb: "Correcto. Es el pilar del conductismo." },
+            { text: "El refuerzo positivo moldea la producción verbal correcta.", type: "postulado", fb: "Correcto. El refuerzo es clave en esta teoría." },
+            { text: "El input que recibe un niño es insuficiente para explicar la gramática.", type: "critica", fb: "Correcto. Esta es la premisa de la Pobreza del Estímulo." }
+        ];
+        let currentAmbQ = 0;
+
+        function checkQuiz(section, selected) {
+            const q = ambQuestions[currentAmbQ];
+            const fbBox = document.getElementById(`${section}-quiz-feedback`);
+            
+            if (selected === q.type) {
+                fbBox.className = "mt-6 p-4 rounded-lg text-center font-bold bg-green-100 text-green-800 block";
+                fbBox.innerHTML = `<i class="fas fa-check-circle"></i> ${q.fb}`;
+                document.getElementById(`${section}-quiz-next`).classList.remove('hidden');
+            } else {
+                fbBox.className = "mt-6 p-4 rounded-lg text-center font-bold bg-red-100 text-red-800 block";
+                fbBox.innerHTML = `<i class="fas fa-times-circle"></i> Incorrecto. Intenta de nuevo.`;
+            }
+        }
+
+        function nextQuizAmb() {
+            currentAmbQ++;
+            if(currentAmbQ >= ambQuestions.length) {
+                document.getElementById('amb-quiz-text').innerHTML = "¡Excelente! Has completado la clasificación.";
+                document.getElementById('amb-quiz-feedback').classList.add('hidden');
+                document.getElementById('amb-quiz-next').classList.add('hidden');
+                document.querySelector('#view-amb-3 .grid').classList.add('hidden');
+            } else {
+                document.getElementById('amb-quiz-text').innerText = `"${ambQuestions[currentAmbQ].text}"`;
+                document.getElementById('amb-quiz-feedback').classList.add('hidden');
+                document.getElementById('amb-quiz-next').classList.add('hidden');
+            }
+        }
+
+        // Quiz Nativista (Selección Múltiple)
+        function checkMultipleChoice(section, btn, isCorrect) {
+            const fbBox = document.getElementById(`${section}-quiz-feedback`);
+            // Limpiar estilos previos
+            btn.parentElement.querySelectorAll('button').forEach(b => {
+                b.classList.remove('bg-green-100', 'border-green-500', 'bg-red-100', 'border-red-500');
+            });
+
+            if (isCorrect) {
+                btn.classList.add('bg-green-100', 'border-green-500');
+                fbBox.className = "mt-6 p-4 rounded-lg text-left text-sm font-medium bg-green-100 text-green-800 block";
+                fbBox.innerHTML = "<strong>Correcto.</strong> La crítica principal apunta a que el modelo, al priorizar la dotación biológica, no logra integrar de manera satisfactoria cómo el uso del lenguaje en contextos sociales reales afecta la adquisición.";
+            } else {
+                btn.classList.add('bg-red-100', 'border-red-500');
+                fbBox.className = "mt-6 p-4 rounded-lg text-left text-sm font-medium bg-red-100 text-red-800 block";
+                fbBox.innerHTML = "Incorrecto. Revisa las críticas sobre el rol de la interacción en la página anterior.";
+            }
+        }
+
+        // Quiz Cognitivista (Secuencia)
+        let seqOrder = [];
+        const correctSeq = [1, 2, 3, 4];
+
+        function selectSequence(btn, orderValue) {
+            if(seqOrder.includes(orderValue)) return; // Ya seleccionado
+            
+            seqOrder.push(orderValue);
+            btn.classList.add('bg-blue-100', 'border-blue-500');
+            btn.querySelector('.seq-number').innerText = seqOrder.length;
+            btn.querySelector('.seq-number').classList.replace('text-gray-400', 'text-blue-800');
+        }
+
+        function checkSequence() {
+            if(seqOrder.length !== 4) {
+                alert("Por favor, selecciona las 4 etapas en orden.");
+                return;
+            }
+            const fbBox = document.getElementById('seq-feedback');
+            const isMatch = seqOrder.every((val, index) => val === correctSeq[index]);
+            
+            if(isMatch) {
+                fbBox.classList.remove('hidden');
+                fbBox.classList.replace('bg-red-100', 'bg-green-100');
+                fbBox.classList.replace('text-red-800', 'text-green-800');
+                fbBox.innerHTML = `<i class="fas fa-check-circle mr-2"></i> Correcto. Esta secuencia ilustra cómo la intención inicial es moldeada lingüísticamente a través del andamiaje en la ZDP, un proceso central para el interaccionismo.`;
+            } else {
+                fbBox.classList.remove('hidden');
+                fbBox.classList.replace('bg-green-100', 'bg-red-100');
+                fbBox.classList.replace('text-green-800', 'text-red-800');
+                fbBox.innerHTML = `<i class="fas fa-times-circle mr-2"></i> Orden incorrecto. Intenta de nuevo (Pista: inicia con el sonido indiferenciado).`;
+            }
+        }
+
+        function resetSequence() {
+            seqOrder = [];
+            document.querySelectorAll('.seq-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-100', 'border-blue-500');
+                btn.querySelector('.seq-number').innerText = "?";
+                btn.querySelector('.seq-number').classList.replace('text-blue-800', 'text-gray-400');
+            });
+            document.getElementById('seq-feedback').classList.add('hidden');
+        }
+
+        // Init
+        updateNavUI();
+    </script>
+</body>
+</html>
